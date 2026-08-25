@@ -49,7 +49,6 @@
   .hd-font{ font-family:'Rubik', sans-serif; }
   .mono{ font-family:'IBM Plex Mono', monospace; direction: ltr; display:inline-block; }
 
-  /* ---------- shell ---------- */
   .shell{ max-width: 1180px; margin: 0 auto; padding: 20px 20px 80px; }
 
   .topbar{
@@ -74,7 +73,6 @@
   }
   .today-chip b{ color:var(--text); font-weight:600; }
 
-  /* ---------- tabs ---------- */
   .tabs{
     display:flex; gap:6px; margin-bottom:22px; overflow-x:auto;
     padding-bottom:2px;
@@ -93,7 +91,6 @@
   }
   .tab-btn.active .tab-count{ background:rgba(15,27,45,.22); color:var(--bg); }
 
-  /* ---------- generic cards ---------- */
   .card{
     background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
     padding:18px;
@@ -104,7 +101,6 @@
   }
   .section-title .hint{ font-size:11.5px; font-weight:400; color:var(--text-faint); }
 
-  /* ---------- dashboard ---------- */
   .kpi-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
   @media (max-width:760px){ .kpi-grid{ grid-template-columns:repeat(2,1fr);} }
   .kpi-card{
@@ -133,27 +129,24 @@
   .load-total{ width:22px; flex-shrink:0; font-family:'IBM Plex Mono',monospace; font-size:13px; text-align:left; color:var(--text-dim); direction:ltr;}
 
   .status-row{ display:flex; align-items:center; gap:10px; padding:8px 0; }
-  .status-dot{ width:9px; height:9px; border-radius:50%; flex-shrink:0; }
   .status-label{ font-size:13px; flex:1; color:var(--text-dim); }
   .status-val{ font-family:'IBM Plex Mono',monospace; font-size:14px; font-weight:600; }
   .status-bar-track{ height:6px; background:var(--surface-2); border-radius:4px; overflow:hidden; margin-top:5px; }
   .status-bar-fill{ height:100%; border-radius:4px; }
 
-  /* ---------- pills ---------- */
   .pill{
     display:inline-flex; align-items:center; gap:4px; font-size:11.5px; font-weight:600;
     padding:3px 9px; border-radius:999px; white-space:nowrap;
   }
-  .pr-קריטי, .pr-red{ background:rgba(239,100,97,.16); color:var(--red); }
-  .pr-גבוה, .pr-orange{ background:rgba(242,169,60,.16); color:var(--amber); }
-  .pr-בינוני, .pr-yellow{ background:rgba(240,210,100,.16); color:var(--yellow); }
-  .pr-נמוך, .pr-green{ background:rgba(95,203,143,.16); color:var(--green); }
+  .pr-red{ background:rgba(239,100,97,.16); color:var(--red); }
+  .pr-orange{ background:rgba(242,169,60,.16); color:var(--amber); }
+  .pr-yellow{ background:rgba(240,210,100,.16); color:var(--yellow); }
+  .pr-green{ background:rgba(95,203,143,.16); color:var(--green); }
   .st-פתוח{ background:var(--surface-3); color:var(--text-dim); }
   .st-בתהליך{ background:rgba(94,234,212,.14); color:var(--teal); }
   .st-ממתין{ background:rgba(242,169,60,.14); color:var(--amber); }
   .st-הושלם{ background:rgba(95,203,143,.16); color:var(--green); }
 
-  /* ---------- tasks list ---------- */
   .toolbar{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; align-items:center; }
   .select, .input, .textarea{
     font-family:'Heebo',sans-serif; background:var(--surface-2); border:1px solid var(--line);
@@ -167,7 +160,6 @@
   }
   .btn:hover{ filter:brightness(1.08); }
   .btn.secondary{ background:var(--surface-2); color:var(--text); border:1px solid var(--line); }
-  .btn.danger{ background:transparent; color:var(--red); border:1px solid rgba(239,100,97,.35); padding:6px 11px; font-size:12px;}
   .btn-icon{ background:transparent; border:none; color:var(--text-faint); cursor:pointer; font-size:15px; padding:4px 6px; }
   .btn-icon:hover{ color:var(--text); }
 
@@ -196,7 +188,6 @@
   .empty{ text-align:center; padding:40px 20px; color:var(--text-faint); }
   .empty .big{ font-size:30px; margin-bottom:8px; }
 
-  /* ---------- inbox ---------- */
   .inbox-row{
     display:flex; align-items:center; gap:10px; background:var(--surface); border:1px solid var(--line);
     border-radius:12px; padding:11px 14px; margin-bottom:8px;
@@ -207,7 +198,6 @@
   .add-row{ display:flex; gap:8px; margin-bottom:18px; }
   .add-row .input{ flex:1; }
 
-  /* ---------- follow up ---------- */
   .owner-card{
     background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
     padding:16px; margin-bottom:12px; cursor:pointer;
@@ -223,7 +213,6 @@
   .owner-detail{ margin-top:10px; padding-top:10px; border-top:1px solid var(--line); display:none; }
   .owner-detail.open{ display:block; }
 
-  /* ---------- daily brief ---------- */
   .brief-date{ font-family:'Rubik',sans-serif; font-size:22px; font-weight:800; margin-bottom:2px; }
   .brief-sub{ font-size:12.5px; color:var(--text-dim); margin-bottom:18px; }
   .brief-section{ margin-bottom:20px; }
@@ -243,10 +232,10 @@
 const PROJECTS = ["🔵 מיזוג חברות","🏬 פתיחת בילו","📱 MyBrunch","👥 HR","📊 Finance","כללי"];
 const TYPES = ["📌 להזכיר","👥 לקבוע פגישה","📞 שיחה","📧 מייל","📋 החלטת הנהלה","🚧 פרויקט","⏳ Follow Up","💰 כספים","🏪 חנויות"];
 const PRIORITIES = [
-  {v:"🔴 קריטי", key:"red", color:"var(--red)"},
-  {v:"🟠 גבוה", key:"orange", color:"var(--amber)"},
-  {v:"🟡 בינוני", key:"yellow", color:"var(--yellow)"},
-  {v:"🟢 נמוך", key:"green", color:"var(--green)"},
+  {v:"🔴 קריטי", key:"red"},
+  {v:"🟠 גבוה", key:"orange"},
+  {v:"🟡 בינוני", key:"yellow"},
+  {v:"🟢 נמוך", key:"green"},
 ];
 const PRIORITY_ORDER = {"🔴 קריטי":0,"🟠 גבוה":1,"🟡 בינוני":2,"🟢 נמוך":3};
 const STATUSES = ["פתוח","בתהליך","ממתין לאחר","הושלם"];
@@ -282,7 +271,7 @@ let activeTab = "dashboard";
 let openOwner = null;
 let filterProject = "all";
 let filterOwner = "all";
-let filterStatus = "open"; // open = not done
+let filterStatus = "open";
 
 const root = document.getElementById('app-root');
 
@@ -313,30 +302,16 @@ async function saveInbox(){
 function esc(s){
   const d = document.createElement('div'); d.textContent = s==null?'':s; return d.innerHTML;
 }
-
 function fmtDate(iso){
   if(!iso) return '';
   const [y,m,d] = iso.split('-');
   return `${d}.${m}.${y}`;
 }
-function todayISO(){
-  const d = new Date();
-  return d.toISOString().slice(0,10);
-}
-function isOverdue(iso){
-  if(!iso) return false;
-  return iso < todayISO();
-}
-function priorityKey(p){
-  const f = PRIORITIES.find(x=>x.v===p);
-  return f? f.key : 'yellow';
-}
-function statusKey(s){
-  if(s==='ממתין לאחר') return 'ממתין';
-  return s;
-}
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+function isOverdue(iso){ if(!iso) return false; return iso < todayISO(); }
+function priorityKey(p){ const f = PRIORITIES.find(x=>x.v===p); return f? f.key : 'yellow'; }
+function statusKey(s){ if(s==='ממתין לאחר') return 'ממתין'; return s; }
 
-// ---------------- DASHBOARD ----------------
 function renderDashboard(){
   const open = state.tasks.filter(t=>t.status!=='הושלם');
   const critical = open.filter(t=>t.priority==='🔴 קריטי').length;
@@ -348,7 +323,6 @@ function renderDashboard(){
   const maxStatus = Math.max(1, ...statusCounts.map(s=>s.n));
   const statusColor = {"פתוח":"var(--text-dim)","בתהליך":"var(--teal)","ממתין לאחר":"var(--amber)","הושלם":"var(--green)"};
 
-  // owner load
   const owners = {};
   open.forEach(t=>{
     const o = t.owner || "לא משויך";
@@ -395,7 +369,6 @@ function renderDashboard(){
   `;
 }
 
-// ---------------- TASKS ----------------
 function taskCardHtml(t){
   const done = t.status==='הושלם';
   const overdue = !done && isOverdue(t.due);
@@ -484,7 +457,10 @@ function deleteTask(id){
   render();
 }
 
-function openTaskModal(task){
+// FIX: openTaskModal now accepts an optional sourceInboxId.
+// The inbox item is only removed AFTER the task is actually saved successfully —
+// never removed on cancel/close, so nothing can silently disappear anymore.
+function openTaskModal(task, sourceInboxId){
   const isNew = !task;
   const t = task || {id:null,text:'',project:PROJECTS[5],type:TYPES[0],owner:'',priority:'🟡 בינוני',status:'פתוח',due:'',notes:''};
   const overlay = document.createElement('div');
@@ -508,6 +484,7 @@ function openTaskModal(task){
         </div>
         <textarea class="textarea" id="m-notes" rows="2" placeholder="הערות (אופציונלי)">${esc(t.notes)}</textarea>
       </div>
+      ${sourceInboxId? `<div style="font-size:11.5px;color:var(--text-faint);margin-top:8px;">💡 הפריט יימחק מה-Inbox רק אחרי שמירה מוצלחת כאן.</div>`:''}
       <div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end;">
         <button class="btn secondary" id="m-cancel">ביטול</button>
         <button class="btn" id="m-save">${isNew?'הוספה':'שמירה'}</button>
@@ -536,12 +513,16 @@ function openTaskModal(task){
       Object.assign(t, data);
     }
     saveTasks();
+    // Only now — after a confirmed, successful save — remove the source inbox item.
+    if(sourceInboxId){
+      state.inbox = state.inbox.filter(i=>i.id!==sourceInboxId);
+      saveInbox();
+    }
     overlay.remove();
     render();
   };
 }
 
-// ---------------- INBOX ----------------
 function renderInbox(){
   root.querySelector('#tab-content').innerHTML = `
     <div class="card" style="margin-bottom:16px;">
@@ -583,14 +564,16 @@ function renderInbox(){
     } else if(btn.dataset.action==='promote'){
       const item = state.inbox.find(i=>i.id===id);
       if(!item) return;
-      state.inbox = state.inbox.filter(i=>i.id!==id);
-      saveInbox();
-      openTaskModal({id:null,text:item.text,project:PROJECTS[5],type:TYPES[0],owner:'',priority:'🟡 בינוני',status:'פתוח',due:'',notes:''});
+      // FIX: no longer removed from inbox here — only passed as sourceInboxId.
+      // It stays safely in the Inbox unless/until the modal is actually saved.
+      openTaskModal(
+        {id:null,text:item.text,project:PROJECTS[5],type:TYPES[0],owner:'',priority:'🟡 בינוני',status:'פתוח',due:'',notes:''},
+        item.id
+      );
     }
   });
 }
 
-// ---------------- FOLLOW UP ----------------
 function renderFollowUp(){
   const open = state.tasks.filter(t=>t.status!=='הושלם' && t.owner);
   const owners = {};
@@ -628,7 +611,6 @@ function renderFollowUp(){
   root.querySelector('#tab-content').addEventListener('click', taskListClickHandler);
 }
 
-// ---------------- DAILY BRIEF ----------------
 function renderBrief(){
   const open = state.tasks.filter(t=>t.status!=='הושלם');
   const critical = open.filter(t=>t.priority==='🔴 קריטי');
@@ -679,7 +661,6 @@ function renderBrief(){
   `;
 }
 
-// ---------------- SHELL / TABS ----------------
 const TABS = [
   {id:'dashboard', label:'דשבורד', icon:'🏠', render: renderDashboard, count: ()=> state.tasks.filter(t=>t.priority==='🔴 קריטי' && t.status!=='הושלם').length},
   {id:'tasks', label:'משימות', icon:'📋', render: renderTasks, count: ()=> state.tasks.filter(t=>t.status!=='הושלם').length},
@@ -731,6 +712,5 @@ function render(){
 loadState();
 })();
 </script>
-
 </body>
 </html>
