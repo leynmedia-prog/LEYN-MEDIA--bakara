@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>מוקד הבקרה</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="מוקד הבקרה">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0F1B2D">
+<style>html,body{margin:0;padding:0;background:#0F1B2D;}</style>
+</head>
+<body>
+<div id="app-root"></div>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&family=Heebo:wght@300;400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+  :root{
+    --bg:#0F1B2D;
+    --surface:#152442;
+    --surface-2:#1B2E52;
+    --surface-3:#223a63;
+    --line:#2A3E63;
+    --text:#EAEEF5;
+    --text-dim:#8FA0BC;
+    --text-faint:#5C6E8C;
+    --teal:#5EEAD4;
+    --teal-dim:#2E7C71;
+    --amber:#F2A93C;
+    --red:#EF6461;
+    --orange:#F2A93C;
+    --yellow:#F0D264;
+    --green:#5FCB8F;
+    --radius:14px;
+  }
+
+  * { box-sizing: border-box; }
+
+  #app-root{
+    direction: rtl;
+    font-family: 'Heebo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .hd-font{ font-family:'Rubik', sans-serif; }
+  .mono{ font-family:'IBM Plex Mono', monospace; direction: ltr; display:inline-block; }
+
+  .shell{ max-width: 1180px; margin: 0 auto; padding: 20px 20px 80px; }
+
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 4px 2px 22px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 22px;
+    gap: 12px; flex-wrap: wrap;
+  }
+  .brand{ display:flex; align-items:center; gap:12px; }
+  .brand-mark{
+    width:38px; height:38px; border-radius:10px;
+    background: linear-gradient(135deg, var(--teal), var(--teal-dim));
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px; flex-shrink:0;
+  }
+  .brand-text h1{ font-size:19px; margin:0; font-weight:800; letter-spacing:.2px;}
+  .brand-text p{ font-size:12px; margin:2px 0 0; color:var(--text-dim); font-weight:400;}
+  .today-chip{
+    font-size:12.5px; color: var(--text-dim); background:var(--surface);
+    border:1px solid var(--line); padding:7px 14px; border-radius:999px;
+  }
+  .today-chip b{ color:var(--text); font-weight:600; }
+
+  .tabs{
+    display:flex; gap:6px; margin-bottom:22px; overflow-x:auto;
+    padding-bottom:2px;
+  }
+  .tab-btn{
+    font-family:'Heebo',sans-serif; font-size:14px; font-weight:500;
+    background:transparent; border:1px solid transparent; color:var(--text-dim);
+    padding:9px 16px; border-radius:10px; cursor:pointer; white-space:nowrap;
+    display:flex; align-items:center; gap:7px; transition:.15s;
+  }
+  .tab-btn:hover{ color:var(--text); background:var(--surface); }
+  .tab-btn.active{ color:var(--bg); background:var(--teal); font-weight:700; }
+  .tab-count{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; background:rgba(255,255,255,.14);
+    padding:1px 6px; border-radius:6px; min-width:18px; text-align:center;
+  }
+  .tab-btn.active .tab-count{ background:rgba(15,27,45,.22); color:var(--bg); }
+
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:18px;
+  }
+  .section-title{
+    font-family:'Rubik',sans-serif; font-size:14px; font-weight:700; margin:0 0 14px;
+    display:flex; align-items:center; justify-content:space-between; color:var(--text);
+  }
+  .section-title .hint{ font-size:11.5px; font-weight:400; color:var(--text-faint); }
+
+  .kpi-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+  @media (max-width:760px){ .kpi-grid{ grid-template-columns:repeat(2,1fr);} }
+  .kpi-card{
+    border-radius:var(--radius); padding:16px 16px 14px; position:relative; overflow:hidden;
+    border:1px solid var(--line);
+  }
+  .kpi-card .num{ font-family:'IBM Plex Mono',monospace; font-size:32px; font-weight:600; line-height:1; direction:ltr; text-align:right;}
+  .kpi-card .lbl{ font-size:12.5px; margin-top:8px; color:var(--text-dim); font-weight:500;}
+  .kpi-red{ background:linear-gradient(160deg, rgba(239,100,97,.16), var(--surface) 60%); }
+  .kpi-red .num{ color:var(--red); }
+  .kpi-orange{ background:linear-gradient(160deg, rgba(242,169,60,.16), var(--surface) 60%); }
+  .kpi-orange .num{ color:var(--amber); }
+  .kpi-teal{ background:linear-gradient(160deg, rgba(94,234,212,.14), var(--surface) 60%); }
+  .kpi-teal .num{ color:var(--teal); }
+  .kpi-green{ background:linear-gradient(160deg, rgba(95,203,143,.14), var(--surface) 60%); }
+  .kpi-green .num{ color:var(--green); }
+
+  .dash-grid{ display:grid; grid-template-columns:1.15fr .85fr; gap:14px; }
+  @media (max-width:860px){ .dash-grid{ grid-template-columns:1fr; } }
+
+  .load-row{ display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--line); }
+  .load-row:last-child{ border-bottom:none; }
+  .load-name{ width:66px; flex-shrink:0; font-size:13px; font-weight:600; }
+  .load-bar-track{ flex:1; height:16px; background:var(--surface-2); border-radius:8px; overflow:hidden; display:flex; }
+  .load-seg{ height:100%; }
+  .load-total{ width:22px; flex-shrink:0; font-family:'IBM Plex Mono',monospace; font-size:13px; text-align:left; color:var(--text-dim); direction:ltr;}
+
+  .status-row{ display:flex; align-items:center; gap:10px; padding:8px 0; }
+  .status-label{ font-size:13px; flex:1; color:var(--text-dim); }
+  .status-val{ font-family:'IBM Plex Mono',monospace; font-size:14px; font-weight:600; }
+  .status-bar-track{ height:6px; background:var(--surface-2); border-radius:4px; overflow:hidden; margin-top:5px; }
+  .status-bar-fill{ height:100%; border-radius:4px; }
+
+  .pill{
+    display:inline-flex; align-items:center; gap:4px; font-size:11.5px; font-weight:600;
+    padding:3px 9px; border-radius:999px; white-space:nowrap;
+  }
+  .pr-red{ background:rgba(239,100,97,.16); color:var(--red); }
+  .pr-orange{ background:rgba(242,169,60,.16); color:var(--amber); }
+  .pr-yellow{ background:rgba(240,210,100,.16); color:var(--yellow); }
+  .pr-green{ background:rgba(95,203,143,.16); color:var(--green); }
+  .st-פתוח{ background:var(--surface-3); color:var(--text-dim); }
+  .st-בתהליך{ background:rgba(94,234,212,.14); color:var(--teal); }
+  .st-ממתין{ background:rgba(242,169,60,.14); color:var(--amber); }
+  .st-הושלם{ background:rgba(95,203,143,.16); color:var(--green); }
+
+  .toolbar{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; align-items:center; }
+  .select, .input, .textarea{
+    font-family:'Heebo',sans-serif; background:var(--surface-2); border:1px solid var(--line);
+    color:var(--text); border-radius:9px; padding:8px 11px; font-size:13px; outline:none;
+  }
+  .select:focus, .input:focus, .textarea:focus{ border-color:var(--teal); }
+  .select{ cursor:pointer; }
+  .btn{
+    font-family:'Heebo',sans-serif; font-weight:700; font-size:13px; border:none; cursor:pointer;
+    padding:9px 16px; border-radius:9px; background:var(--teal); color:#0F1B2D; transition:.15s;
+  }
+  .btn:hover{ filter:brightness(1.08); }
+  .btn.secondary{ background:var(--surface-2); color:var(--text); border:1px solid var(--line); }
+  .btn-icon{ background:transparent; border:none; color:var(--text-faint); cursor:pointer; font-size:15px; padding:4px 6px; }
+  .btn-icon:hover{ color:var(--text); }
+
+  .task-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:12px;
+    padding:13px 15px; margin-bottom:9px; display:flex; align-items:flex-start; gap:12px;
+    transition:.15s;
+  }
+  .task-card.done{ opacity:.5; }
+  .task-check{
+    width:21px; height:21px; border-radius:50%; border:2px solid var(--text-faint);
+    flex-shrink:0; cursor:pointer; margin-top:2px; display:flex; align-items:center; justify-content:center;
+    background:transparent; transition:.15s; font-size:12px;
+  }
+  .task-check.checked{ background:var(--green); border-color:var(--green); color:#0F1B2D; }
+  .task-main{ flex:1; min-width:0; }
+  .task-text{ font-size:14.5px; font-weight:500; margin-bottom:6px; }
+  .task-card.done .task-text{ text-decoration:line-through; color:var(--text-dim); }
+  .task-meta{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; font-size:12px; color:var(--text-dim); }
+  .task-notes{ font-size:12.5px; color:var(--text-faint); margin-top:5px; }
+  .task-actions{ display:flex; gap:2px; flex-shrink:0; }
+  .owner-chip{ font-size:11.5px; font-weight:600; color:var(--text); background:var(--surface-3); padding:2px 8px; border-radius:6px; }
+  .due-chip{ font-size:11.5px; color:var(--text-dim); }
+  .due-chip.overdue{ color:var(--red); font-weight:600; }
+
+  .empty{ text-align:center; padding:40px 20px; color:var(--text-faint); }
+  .empty .big{ font-size:30px; margin-bottom:8px; }
+
+  .inbox-row{
+    display:flex; align-items:center; gap:10px; background:var(--surface); border:1px solid var(--line);
+    border-radius:12px; padding:11px 14px; margin-bottom:8px;
+  }
+  .inbox-text{ flex:1; font-size:14px; }
+  .inbox-date{ font-size:11.5px; color:var(--text-faint); font-family:'IBM Plex Mono',monospace; direction:ltr; }
+
+  .add-row{ display:flex; gap:8px; margin-bottom:18px; }
+  .add-row .input{ flex:1; }
+
+  .owner-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:16px; margin-bottom:12px; cursor:pointer;
+  }
+  .owner-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .owner-title{ font-family:'Rubik',sans-serif; font-weight:700; font-size:15px; display:flex; align-items:center; gap:8px; }
+  .owner-badge{
+    font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600;
+    background:var(--surface-3); padding:2px 10px; border-radius:8px; color:var(--teal);
+  }
+  .chev{ transition:.2s; color:var(--text-faint); font-size:12px; }
+  .chev.open{ transform:rotate(180deg); }
+  .owner-detail{ margin-top:10px; padding-top:10px; border-top:1px solid var(--line); display:none; }
+  .owner-detail.open{ display:block; }
+
+  .brief-date{ font-family:'Rubik',sans-serif; font-size:22px; font-weight:800; margin-bottom:2px; }
+  .brief-sub{ font-size:12.5px; color:var(--text-dim); margin-bottom:18px; }
+  .brief-section{ margin-bottom:20px; }
+  .brief-section h3{ font-family:'Rubik',sans-serif; font-size:13.5px; font-weight:700; margin:0 0 10px; display:flex; align-items:center; gap:7px;}
+  .brief-item{ display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--line); font-size:14px; }
+  .brief-item:last-child{ border-bottom:none; }
+  .brief-item .owner-chip{ margin-inline-start:auto; }
+  .brief-empty{ font-size:13px; color:var(--text-faint); padding:6px 0; }
+
+  ::-webkit-scrollbar{ height:6px; width:6px; }
+  ::-webkit-scrollbar-thumb{ background:var(--surface-3); border-radius:3px; }
+</style>
+
+<script>
+(function(){
+
+const PROJECTS = ["🔵 מיזוג חברות","🏬 פתיחת בילו","📱 MyBrunch","👥 HR","📊 Finance","כללי"];
+const TYPES = ["📌 להזכיר","👥 לקבוע פגישה","📞 שיחה","📧 מייל","📋 החלטת הנהלה","🚧 פרויקט","⏳ Follow Up","💰 כספים","🏪 חנויות"];
+const PRIORITIES = [
+  {v:"🔴 קריטי", key:"red"},
+  {v:"🟠 גבוה", key:"orange"},
+  {v:"🟡 בינוני", key:"yellow"},
+  {v:"🟢 נמוך", key:"green"},
+];
+const PRIORITY_ORDER = {"🔴 קריטי":0,"🟠 גבוה":1,"🟡 בינוני":2,"🟢 נמוך":3};
+const STATUSES = ["פתוח","בתהליך","ממתין לאחר","הושלם"];
+
+const DEFAULT_TASKS = [
+ {id:1,text:"שיחה עם שמוליק - צוות היגוי ואנה",project:"כללי",type:"📞 שיחה",owner:"רותם",priority:"🟠 גבוה",status:"פתוח",due:"2026-08-03",notes:"גג עד יום שני הבא"},
+ {id:2,text:"העברת דוח צפי כמויות ותוכנית עסקית לרותם",project:"📊 Finance",type:"⏳ Follow Up",owner:"מולי",priority:"🟡 בינוני",status:"ממתין לאחר",due:"",notes:""},
+ {id:3,text:"בירור חיובים לא נכונים - CDI",project:"📊 Finance",type:"⏳ Follow Up",owner:"מולי",priority:"🟠 גבוה",status:"פתוח",due:"",notes:"חיובים לא נכונים"},
+ {id:4,text:"לקבל תיאור משרה למנהלת קולקציה",project:"👥 HR",type:"⏳ Follow Up",owner:"רותם",priority:"🟡 בינוני",status:"ממתין לאחר",due:"",notes:"עבור ליה, לצורך הגיוס"},
+ {id:5,text:"לקבוע פגישה עם עידן מרנואר - קולקציה חדשה",project:"👥 HR",type:"👥 לקבוע פגישה",owner:"ליה",priority:"🟠 גבוה",status:"פתוח",due:"2026-08-04",notes:"אצלנו, עבור הקולקציה החדשה, גג עד יום שלישי"},
+ {id:6,text:"לדחות את שרון לשבוע הבא",project:"כללי",type:"📌 להזכיר",owner:"רותם",priority:"🟢 נמוך",status:"פתוח",due:"",notes:"לבדוק מתי הוא במרכז"},
+ {id:7,text:"לברר סטטוס הזמנה מסין מול דניאל",project:"כללי",type:"⏳ Follow Up",owner:"דניאל",priority:"🟡 בינוני",status:"פתוח",due:"",notes:"דניאל - מנהל מותג"},
+ {id:8,text:"הכנת חוזים חדשים - Hire & Fire",project:"🔵 מיזוג חברות",type:"🚧 פרויקט",owner:"רותם",priority:"🔴 קריטי",status:"פתוח",due:"2027-01-01",notes:"התארגנות לקראת ה-1.1.27"},
+ {id:9,text:"סדר במצבת העובדים בפריוריטי - הסרת מפוטרים",project:"🔵 מיזוג חברות",type:"💰 כספים",owner:"מרי לוז",priority:"🟠 גבוה",status:"פתוח",due:"",notes:"יש עובדים שפוטרו ועדיין מופיעים במערכת"},
+ {id:10,text:"התאמת מספרי סניפים לפריוריטי",project:"🔵 מיזוג חברות",type:"💰 כספים",owner:"מרי לוז",priority:"🟡 בינוני",status:"פתוח",due:"",notes:""},
+ {id:11,text:"הכנת רשימת עובדים ותנאי שכר",project:"🔵 מיזוג חברות",type:"💰 כספים",owner:"מרי לוז",priority:"🟠 גבוה",status:"פתוח",due:"",notes:"בעזרת רויטל - עדיפות גבוהה"},
+ {id:12,text:"בדיקת אפשרות גיוס זכיינים מול שותפים חדשים",project:"🔵 מיזוג חברות",type:"🚧 פרויקט",owner:"ליה",priority:"🟡 בינוני",status:"פתוח",due:"",notes:""},
+ {id:13,text:"לקבוע פגישה עם הלית - שיווק חוצות",project:"כללי",type:"👥 לקבוע פגישה",owner:"ליה",priority:"🟡 בינוני",status:"פתוח",due:"",notes:"לבדוק מה נעשה עד כה בנושא"},
+ {id:14,text:"לקבוע פגישה עם עודד, עידן ורותם - דיווח שעות",project:"כללי",type:"👥 לקבוע פגישה",owner:"ליה",priority:"🟡 בינוני",status:"פתוח",due:"2026-08-04",notes:"שבוע הבא"},
+ {id:15,text:"פגישה עם מאור - בנושא AI",project:"כללי",type:"👥 לקבוע פגישה",owner:"רותם",priority:"🟢 נמוך",status:"פתוח",due:"",notes:"להתייעץ אם יש זמן לכך כרגע"},
+ {id:16,text:"לדבר עם אריה - הסכם חוצות",project:"כללי",type:"📞 שיחה",owner:"רותם",priority:"🟠 גבוה",status:"פתוח",due:"",notes:"מדוע לא נשלח לחיים? דחוף יחסית"},
+ {id:17,text:"הכנת תשתיות לפתיחת חנות בילו",project:"🏬 פתיחת בילו",type:"🏪 חנויות",owner:"רותם",priority:"🟠 גבוה",status:"פתוח",due:"2026-08-11",notes:"פתיחה מתוכננת ל-11-12 לאוגוסט"},
+ {id:18,text:"מעקב שיפוצים בחנות בילו",project:"🏬 פתיחת בילו",type:"🏪 חנויות",owner:"",priority:"🟡 בינוני",status:"בתהליך",due:"2026-08-07",notes:"צפי שיפוצים 1-7 לאוגוסט"},
+ {id:19,text:"לדבר עם ישראל - בילו ואודי",project:"🏬 פתיחת בילו",type:"📞 שיחה",owner:"רותם",priority:"🟡 בינוני",status:"פתוח",due:"",notes:""},
+ {id:20,text:"בדיקת סטטוס אוטומציית דוחות בקרת שרשרת",project:"📊 Finance",type:"⏳ Follow Up",owner:"עומרי",priority:"🟡 בינוני",status:"פתוח",due:"",notes:"לבדוק אפשרות לקבוע פגישה להצגת הדוחות"},
+ {id:21,text:"להבין את חיוב CDI",project:"📊 Finance",type:"💰 כספים",owner:"רותם",priority:"🟠 גבוה",status:"פתוח",due:"",notes:""},
+ {id:22,text:"לקבל רשימת מפקידים ממרי לוז",project:"📱 MyBrunch",type:"⏳ Follow Up",owner:"מרי לוז",priority:"🟡 בינוני",status:"ממתין לאחר",due:"",notes:"לטובת בניית מערך הפקדות, באחריות ליה"},
+ {id:23,text:"לקבוע פגישה עם רותם - סטטוס MyBrunch",project:"📱 MyBrunch",type:"👥 לקבוע פגישה",owner:"ליה",priority:"🟡 בינוני",status:"פתוח",due:"",notes:""},
+];
+
+let state = { tasks: [], inbox: [], nextTaskId: 24, nextInboxId: 1, loaded:false };
+let activeTab = "dashboard";
+let openOwner = null;
+let filterProject = "all";
+let filterOwner = "all";
+let filterStatus = "open";
+
+const root = document.getElementById('app-root');
+
+async function loadState(){
+  try{
+    const t = localStorage.getItem('mokedhabakara_tasks');
+    state.tasks = t ? JSON.parse(t) : DEFAULT_TASKS.slice();
+  }catch(e){ state.tasks = DEFAULT_TASKS.slice(); }
+  try{
+    const ib = localStorage.getItem('mokedhabakara_inbox');
+    state.inbox = ib ? JSON.parse(ib) : [];
+  }catch(e){ state.inbox = []; }
+  const maxT = state.tasks.reduce((m,t)=>Math.max(m,t.id),0);
+  state.nextTaskId = maxT+1;
+  const maxI = state.inbox.reduce((m,t)=>Math.max(m,t.id),0);
+  state.nextInboxId = maxI+1;
+  state.loaded = true;
+  render();
+}
+
+async function saveTasks(){
+  try{ localStorage.setItem('mokedhabakara_tasks', JSON.stringify(state.tasks)); }catch(e){ console.error('save tasks failed', e); }
+}
+async function saveInbox(){
+  try{ localStorage.setItem('mokedhabakara_inbox', JSON.stringify(state.inbox)); }catch(e){ console.error('save inbox failed', e); }
+}
+
+function esc(s){
+  const d = document.createElement('div'); d.textContent = s==null?'':s; return d.innerHTML;
+}
+function fmtDate(iso){
+  if(!iso) return '';
+  const [y,m,d] = iso.split('-');
+  return `${d}.${m}.${y}`;
+}
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+function isOverdue(iso){ if(!iso) return false; return iso < todayISO(); }
+function priorityKey(p){ const f = PRIORITIES.find(x=>x.v===p); return f? f.key : 'yellow'; }
+function statusKey(s){ if(s==='ממתין לאחר') return 'ממתין'; return s; }
+
+function renderDashboard(){
+  const open = state.tasks.filter(t=>t.status!=='הושלם');
+  const critical = open.filter(t=>t.priority==='🔴 קריטי').length;
+  const followups = open.filter(t=>t.type==='⏳ Follow Up').length;
+  const meetings = open.filter(t=>t.type==='👥 לקבוע פגישה').length;
+  const doneCount = state.tasks.filter(t=>t.status==='הושלם').length;
+
+  const statusCounts = STATUSES.map(s=>({s, n: state.tasks.filter(t=>t.status===s).length}));
+  const maxStatus = Math.max(1, ...statusCounts.map(s=>s.n));
+  const statusColor = {"פתוח":"var(--text-dim)","בתהליך":"var(--teal)","ממתין לאחר":"var(--amber)","הושלם":"var(--green)"};
+
+  const owners = {};
+  open.forEach(t=>{
+    const o = t.owner || "לא משויך";
+    if(!owners[o]) owners[o] = {"red":0,"orange":0,"yellow":0,"green":0,total:0};
+    owners[o][priorityKey(t.priority)]++;
+    owners[o].total++;
+  });
+  const ownerList = Object.entries(owners).sort((a,b)=>b[1].total-a[1].total);
+  const maxLoad = Math.max(1, ...ownerList.map(o=>o[1].total));
+
+  root.querySelector('#tab-content').innerHTML = `
+    <div class="kpi-grid">
+      <div class="kpi-card kpi-red"><div class="num mono">${critical}</div><div class="lbl">🔴 קריטיות פתוחות</div></div>
+      <div class="kpi-card kpi-orange"><div class="num mono">${followups}</div><div class="lbl">⏳ Follow Ups פתוחים</div></div>
+      <div class="kpi-card kpi-teal"><div class="num mono">${meetings}</div><div class="lbl">👥 פגישות לקבוע</div></div>
+      <div class="kpi-card kpi-green"><div class="num mono">${doneCount}</div><div class="lbl">✔ הושלמו (סה״כ)</div></div>
+    </div>
+    <div class="dash-grid">
+      <div class="card">
+        <div class="section-title">🤖 עומס לפי אחראי <span class="hint">משימות פתוחות</span></div>
+        ${ownerList.length? ownerList.map(([name,d])=>`
+          <div class="load-row">
+            <div class="load-name">${esc(name)}</div>
+            <div class="load-bar-track">
+              ${['red','orange','yellow','green'].map(k=> d[k]? `<div class="load-seg" style="width:${(d[k]/maxLoad)*100}%; background:var(--${k==='red'?'red':k==='orange'?'amber':k==='yellow'?'yellow':'green'})"></div>`:'').join('')}
+            </div>
+            <div class="load-total mono">${d.total}</div>
+          </div>
+        `).join('') : `<div class="brief-empty">אין משימות פתוחות כרגע 🎉</div>`}
+      </div>
+      <div class="card">
+        <div class="section-title">📊 פילוח לפי סטטוס</div>
+        ${statusCounts.map(sc=>`
+          <div class="status-row-wrap">
+            <div class="status-row">
+              <span class="status-label">${sc.s}</span>
+              <span class="status-val mono" style="color:${statusColor[sc.s]}">${sc.n}</span>
+            </div>
+            <div class="status-bar-track"><div class="status-bar-fill" style="width:${(sc.n/maxStatus)*100}%; background:${statusColor[sc.s]}"></div></div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function taskCardHtml(t){
+  const done = t.status==='הושלם';
+  const overdue = !done && isOverdue(t.due);
+  return `
+    <div class="task-card ${done?'done':''}" data-id="${t.id}">
+      <button class="task-check ${done?'checked':''}" data-action="toggle-done" data-id="${t.id}">${done?'✓':''}</button>
+      <div class="task-main">
+        <div class="task-text">${esc(t.text)}</div>
+        <div class="task-meta">
+          <span class="pill" style="background:var(--surface-3);color:var(--text-dim)">${esc(t.project)}</span>
+          <span class="pill" style="background:var(--surface-3);color:var(--text-dim)">${esc(t.type)}</span>
+          <span class="pill pr-${priorityKey(t.priority)}">${esc(t.priority)}</span>
+          <span class="pill st-${statusKey(t.status)}">${esc(t.status)}</span>
+          ${t.owner? `<span class="owner-chip">👤 ${esc(t.owner)}</span>`:''}
+          ${t.due? `<span class="due-chip ${overdue?'overdue':''}">📅 ${fmtDate(t.due)}${overdue?' (באיחור)':''}</span>`:''}
+        </div>
+        ${t.notes? `<div class="task-notes">${esc(t.notes)}</div>`:''}
+      </div>
+      <div class="task-actions">
+        <button class="btn-icon" data-action="edit" data-id="${t.id}" title="עריכה">✎</button>
+        <button class="btn-icon" data-action="delete" data-id="${t.id}" title="מחיקה">🗑</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderTasks(){
+  const owners = Array.from(new Set(state.tasks.map(t=>t.owner).filter(Boolean))).sort();
+  let list = state.tasks.slice();
+  if(filterProject!=='all') list = list.filter(t=>t.project===filterProject);
+  if(filterOwner!=='all') list = list.filter(t=>t.owner===filterOwner);
+  if(filterStatus==='open') list = list.filter(t=>t.status!=='הושלם');
+  if(filterStatus==='done') list = list.filter(t=>t.status==='הושלם');
+  list.sort((a,b)=> (PRIORITY_ORDER[a.priority]??9) - (PRIORITY_ORDER[b.priority]??9));
+
+  root.querySelector('#tab-content').innerHTML = `
+    <div class="toolbar">
+      <button class="btn" data-action="new-task">+ משימה חדשה</button>
+      <select class="select" id="f-project">
+        <option value="all">כל הפרויקטים</option>
+        ${PROJECTS.map(p=>`<option value="${esc(p)}" ${filterProject===p?'selected':''}>${esc(p)}</option>`).join('')}
+      </select>
+      <select class="select" id="f-owner">
+        <option value="all">כל האחראים</option>
+        ${owners.map(o=>`<option value="${esc(o)}" ${filterOwner===o?'selected':''}>${esc(o)}</option>`).join('')}
+      </select>
+      <select class="select" id="f-status">
+        <option value="open" ${filterStatus==='open'?'selected':''}>פתוחות בלבד</option>
+        <option value="done" ${filterStatus==='done'?'selected':''}>הושלמו בלבד</option>
+        <option value="all" ${filterStatus==='all'?'selected':''}>הכל</option>
+      </select>
+    </div>
+    <div id="task-list">
+      ${list.length? list.map(taskCardHtml).join('') : `<div class="empty"><div class="big">📭</div>אין משימות התואמות את הסינון</div>`}
+    </div>
+  `;
+
+  root.querySelector('#f-project').onchange = e=>{ filterProject=e.target.value; renderTasks(); };
+  root.querySelector('#f-owner').onchange = e=>{ filterOwner=e.target.value; renderTasks(); };
+  root.querySelector('#f-status').onchange = e=>{ filterStatus=e.target.value; renderTasks(); };
+
+  root.querySelector('#tab-content').addEventListener('click', taskListClickHandler);
+}
+
+function taskListClickHandler(e){
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  const action = btn.dataset.action;
+  const id = parseInt(btn.dataset.id);
+  if(action==='new-task'){ openTaskModal(null); }
+  else if(action==='toggle-done'){ toggleDone(id); }
+  else if(action==='edit'){ openTaskModal(state.tasks.find(t=>t.id===id)); }
+  else if(action==='delete'){ deleteTask(id); }
+}
+
+function toggleDone(id){
+  const t = state.tasks.find(x=>x.id===id);
+  if(!t) return;
+  t.status = t.status==='הושלם' ? 'פתוח' : 'הושלם';
+  saveTasks();
+  render();
+}
+function deleteTask(id){
+  state.tasks = state.tasks.filter(t=>t.id!==id);
+  saveTasks();
+  render();
+}
+
+// FIX: openTaskModal now accepts an optional sourceInboxId.
+// The inbox item is only removed AFTER the task is actually saved successfully —
+// never removed on cancel/close, so nothing can silently disappear anymore.
+function openTaskModal(task, sourceInboxId){
+  const isNew = !task || task.id == null;
+  const t = task || {id:null,text:'',project:PROJECTS[5],type:TYPES[0],owner:'',priority:'🟡 בינוני',status:'פתוח',due:'',notes:''};
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(5,10,20,.6);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px;';
+  overlay.innerHTML = `
+    <div class="card" style="width:100%;max-width:480px;max-height:88vh;overflow:auto;">
+      <div class="section-title">${isNew? '+ משימה חדשה':'✎ עריכת משימה'}</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <textarea class="textarea" id="m-text" rows="2" placeholder="תיאור המשימה">${esc(t.text)}</textarea>
+        <div style="display:flex;gap:8px;">
+          <select class="select" id="m-project" style="flex:1;">${PROJECTS.map(p=>`<option ${p===t.project?'selected':''}>${esc(p)}</option>`).join('')}</select>
+          <select class="select" id="m-type" style="flex:1;">${TYPES.map(p=>`<option ${p===t.type?'selected':''}>${esc(p)}</option>`).join('')}</select>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <input class="input" id="m-owner" style="flex:1;" placeholder="אחראי / ממתין ל..." value="${esc(t.owner)}">
+          <input class="input" id="m-due" type="date" style="flex:1;" value="${esc(t.due)}">
+        </div>
+        <div style="display:flex;gap:8px;">
+          <select class="select" id="m-priority" style="flex:1;">${PRIORITIES.map(p=>`<option value="${esc(p.v)}" ${p.v===t.priority?'selected':''}>${esc(p.v)}</option>`).join('')}</select>
+          <select class="select" id="m-status" style="flex:1;">${STATUSES.map(s=>`<option ${s===t.status?'selected':''}>${esc(s)}</option>`).join('')}</select>
+        </div>
+        <textarea class="textarea" id="m-notes" rows="2" placeholder="הערות (אופציונלי)">${esc(t.notes)}</textarea>
+      </div>
+      ${sourceInboxId? `<div style="font-size:11.5px;color:var(--text-faint);margin-top:8px;">💡 הפריט יימחק מה-Inbox רק אחרי שמירה מוצלחת כאן.</div>`:''}
+      <div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end;">
+        <button class="btn secondary" id="m-cancel">ביטול</button>
+        <button class="btn" id="m-save">${isNew?'הוספה':'שמירה'}</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', e=>{ if(e.target===overlay) overlay.remove(); });
+  overlay.querySelector('#m-cancel').onclick = ()=> overlay.remove();
+  overlay.querySelector('#m-save').onclick = ()=>{
+    const text = overlay.querySelector('#m-text').value.trim();
+    if(!text){ overlay.querySelector('#m-text').style.borderColor='var(--red)'; return; }
+    const data = {
+      text,
+      project: overlay.querySelector('#m-project').value,
+      type: overlay.querySelector('#m-type').value,
+      owner: overlay.querySelector('#m-owner').value.trim(),
+      due: overlay.querySelector('#m-due').value,
+      priority: overlay.querySelector('#m-priority').value,
+      status: overlay.querySelector('#m-status').value,
+      notes: overlay.querySelector('#m-notes').value.trim(),
+    };
+    if(isNew){
+      state.tasks.push({id: state.nextTaskId++, ...data});
+    } else {
+      Object.assign(t, data);
+    }
+    saveTasks();
+    // Only now — after a confirmed, successful save — remove the source inbox item.
+    if(sourceInboxId){
+      state.inbox = state.inbox.filter(i=>i.id!==sourceInboxId);
+      saveInbox();
+    }
+    overlay.remove();
+    render();
+  };
+}
+
+function renderInbox(){
+  root.querySelector('#tab-content').innerHTML = `
+    <div class="card" style="margin-bottom:16px;">
+      <div class="section-title">🧠 Brain Dump <span class="hint">תפיסה מהירה, פחות מ-10 שניות</span></div>
+      <div class="add-row">
+        <input class="input" id="inbox-input" placeholder="מה עולה לך בראש?">
+        <button class="btn" id="inbox-add">הוספה</button>
+      </div>
+    </div>
+    <div id="inbox-list">
+      ${state.inbox.length? state.inbox.slice().reverse().map(i=>`
+        <div class="inbox-row" data-id="${i.id}">
+          <span class="inbox-text">${esc(i.text)}</span>
+          <span class="inbox-date">${fmtDate(i.date)}</span>
+          <button class="btn secondary" data-action="promote" data-id="${i.id}" style="font-size:12px;padding:6px 10px;">➜ הפוך למשימה</button>
+          <button class="btn-icon" data-action="del-inbox" data-id="${i.id}">🗑</button>
+        </div>
+      `).join('') : `<div class="empty"><div class="big">🧠</div>אין פריטים ב-Inbox כרגע</div>`}
+    </div>
+  `;
+  const addFn = ()=>{
+    const inp = root.querySelector('#inbox-input');
+    const text = inp.value.trim();
+    if(!text) return;
+    state.inbox.push({id: state.nextInboxId++, text, date: todayISO()});
+    saveInbox();
+    render();
+  };
+  root.querySelector('#inbox-add').onclick = addFn;
+  root.querySelector('#inbox-input').addEventListener('keydown', e=>{ if(e.key==='Enter') addFn(); });
+
+  root.querySelector('#tab-content').addEventListener('click', e=>{
+    const btn = e.target.closest('button');
+    if(!btn) return;
+    const id = parseInt(btn.dataset.id);
+    if(btn.dataset.action==='del-inbox'){
+      state.inbox = state.inbox.filter(i=>i.id!==id);
+      saveInbox(); render();
+    } else if(btn.dataset.action==='promote'){
+      const item = state.inbox.find(i=>i.id===id);
+      if(!item) return;
+      // FIX: no longer removed from inbox here — only passed as sourceInboxId.
+      // It stays safely in the Inbox unless/until the modal is actually saved.
+      openTaskModal(
+        {id:null,text:item.text,project:PROJECTS[5],type:TYPES[0],owner:'',priority:'🟡 בינוני',status:'פתוח',due:'',notes:''},
+        item.id
+      );
+    }
+  });
+}
+
+function renderFollowUp(){
+  const open = state.tasks.filter(t=>t.status!=='הושלם' && t.owner);
+  const owners = {};
+  open.forEach(t=>{
+    if(!owners[t.owner]) owners[t.owner]=[];
+    owners[t.owner].push(t);
+  });
+  const list = Object.entries(owners).sort((a,b)=>b[1].length-a[1].length);
+
+  root.querySelector('#tab-content').innerHTML = `
+    <div class="section-title" style="margin-bottom:16px;">🤖 Follow Up Center <span class="hint">כמה משימות פתוחות ממתינות לכל אחד</span></div>
+    ${list.length? list.map(([name, items])=>`
+      <div class="owner-card" data-owner="${esc(name)}">
+        <div class="owner-head">
+          <div class="owner-title">👤 ${esc(name)}</div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="owner-badge mono">${items.length}</span>
+            <span class="chev ${openOwner===name?'open':''}">▾</span>
+          </div>
+        </div>
+        <div class="owner-detail ${openOwner===name?'open':''}">
+          ${items.sort((a,b)=>(PRIORITY_ORDER[a.priority]??9)-(PRIORITY_ORDER[b.priority]??9)).map(taskCardHtml).join('')}
+        </div>
+      </div>
+    `).join('') : `<div class="empty"><div class="big">✅</div>אין משימות פתוחות עם אחראי משויך</div>`}
+  `;
+
+  root.querySelectorAll('.owner-card').forEach(card=>{
+    card.querySelector('.owner-head').addEventListener('click', ()=>{
+      const name = card.dataset.owner;
+      openOwner = openOwner===name ? null : name;
+      renderFollowUp();
+    });
+  });
+  root.querySelector('#tab-content').addEventListener('click', taskListClickHandler);
+}
+
+function renderBrief(){
+  const open = state.tasks.filter(t=>t.status!=='הושלם');
+  const critical = open.filter(t=>t.priority==='🔴 קריטי');
+  const meetings = open.filter(t=>t.type==='👥 לקבוע פגישה');
+  const calls = open.filter(t=>t.type==='📞 שיחה');
+  const overdue = open.filter(t=>isOverdue(t.due));
+
+  const days = ['יום ראשון','יום שני','יום שלישי','יום רביעי','יום חמישי','יום שישי','שבת'];
+  const d = new Date();
+  const dayName = days[d.getDay()];
+  const dateStr = fmtDate(todayISO());
+
+  function sectionItems(items){
+    if(!items.length) return `<div class="brief-empty">אין פריטים 🎉</div>`;
+    return items.map(t=>`
+      <div class="brief-item">
+        <span class="pill pr-${priorityKey(t.priority)}">${esc(t.priority)}</span>
+        <span>${esc(t.text)}</span>
+        ${t.owner? `<span class="owner-chip">${esc(t.owner)}</span>`:''}
+      </div>
+    `).join('');
+  }
+
+  root.querySelector('#tab-content').innerHTML = `
+    <div class="card">
+      <div class="brief-date">${dayName}, ${dateStr}</div>
+      <div class="brief-sub">התדריך היומי שלך — נבנה אוטומטית מתוך רשימת המשימות</div>
+
+      ${overdue.length? `
+      <div class="brief-section">
+        <h3>⚠️ באיחור (${overdue.length})</h3>
+        ${sectionItems(overdue)}
+      </div>`:''}
+
+      <div class="brief-section">
+        <h3>🔴 קריטי היום (${critical.length})</h3>
+        ${sectionItems(critical)}
+      </div>
+      <div class="brief-section">
+        <h3>👥 פגישות לקבוע (${meetings.length})</h3>
+        ${sectionItems(meetings)}
+      </div>
+      <div class="brief-section">
+        <h3>📞 שיחות ממתינות (${calls.length})</h3>
+        ${sectionItems(calls)}
+      </div>
+    </div>
+  `;
+}
+
+const TABS = [
+  {id:'dashboard', label:'דשבורד', icon:'🏠', render: renderDashboard, count: ()=> state.tasks.filter(t=>t.priority==='🔴 קריטי' && t.status!=='הושלם').length},
+  {id:'tasks', label:'משימות', icon:'📋', render: renderTasks, count: ()=> state.tasks.filter(t=>t.status!=='הושלם').length},
+  {id:'inbox', label:'Inbox', icon:'🧠', render: renderInbox, count: ()=> state.inbox.length},
+  {id:'followup', label:'Follow Up', icon:'🤖', render: renderFollowUp, count: ()=> new Set(state.tasks.filter(t=>t.status!=='הושלם'&&t.owner).map(t=>t.owner)).size},
+  {id:'brief', label:'תדריך יומי', icon:'🎯', render: renderBrief, count: null},
+];
+
+function render(){
+  if(!state.loaded){
+    root.innerHTML = `<div class="shell"><div class="empty">טוען...</div></div>`;
+    return;
+  }
+  const days = ['יום ראשון','יום שני','יום שלישי','יום רביעי','יום חמישי','יום שישי','שבת'];
+  const dayName = days[new Date().getDay()];
+
+  root.innerHTML = `
+    <div class="shell">
+      <div class="topbar">
+        <div class="brand">
+          <div class="brand-mark">🧭</div>
+          <div class="brand-text">
+            <h1 class="hd-font">מוקד הבקרה</h1>
+            <p>מערכת ניהול המשימות שלך</p>
+          </div>
+        </div>
+        <div class="today-chip">${dayName} · <b>${fmtDate(todayISO())}</b></div>
+      </div>
+      <div class="tabs" id="tabs"></div>
+      <div id="tab-content"></div>
+    </div>
+  `;
+
+  const tabsEl = root.querySelector('#tabs');
+  tabsEl.innerHTML = TABS.map(t=>`
+    <button class="tab-btn ${activeTab===t.id?'active':''}" data-tab="${t.id}">
+      <span>${t.icon}</span><span>${t.label}</span>
+      ${t.count? `<span class="tab-count">${t.count()}</span>` : ''}
+    </button>
+  `).join('');
+  tabsEl.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.onclick = ()=>{ activeTab = btn.dataset.tab; render(); };
+  });
+
+  const current = TABS.find(t=>t.id===activeTab);
+  current.render();
+}
+
+loadState();
+})();
+</script>
+</body>
+</html>
