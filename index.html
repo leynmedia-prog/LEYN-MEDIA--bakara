@@ -101,8 +101,9 @@
   }
   .section-title .hint{ font-size:11.5px; font-weight:400; color:var(--text-faint); }
 
-  .kpi-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+  .kpi-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:16px; }
   @media (max-width:760px){ .kpi-grid{ grid-template-columns:repeat(2,1fr);} }
+  @media (min-width:761px) and (max-width:980px){ .kpi-grid{ grid-template-columns:repeat(3,1fr);} }
   .kpi-card{
     border-radius:var(--radius); padding:16px 16px 14px; position:relative; overflow:hidden;
     border:1px solid var(--line);
@@ -318,6 +319,9 @@ function renderDashboard(){
   const followups = open.filter(t=>t.type==='⏳ Follow Up').length;
   const meetings = open.filter(t=>t.type==='👥 לקבוע פגישה').length;
   const doneCount = state.tasks.filter(t=>t.status==='הושלם').length;
+  const overdueCount = open.filter(t=>isOverdue(t.due)).length;
+  const totalCount = state.tasks.length;
+  const completionPct = totalCount ? Math.round((doneCount/totalCount)*100) : 0;
 
   const statusCounts = STATUSES.map(s=>({s, n: state.tasks.filter(t=>t.status===s).length}));
   const maxStatus = Math.max(1, ...statusCounts.map(s=>s.n));
@@ -333,12 +337,23 @@ function renderDashboard(){
   const ownerList = Object.entries(owners).sort((a,b)=>b[1].total-a[1].total);
   const maxLoad = Math.max(1, ...ownerList.map(o=>o[1].total));
 
+  const projectCounts = {};
+  open.forEach(t=>{
+    const p = t.project || "כללי";
+    projectCounts[p] = (projectCounts[p]||0) + 1;
+  });
+  const projectList = Object.entries(projectCounts).sort((a,b)=>b[1]-a[1]);
+  const maxProject = Math.max(1, ...projectList.map(p=>p[1]));
+
   root.querySelector('#tab-content').innerHTML = `
     <div class="kpi-grid">
       <div class="kpi-card kpi-red"><div class="num mono">${critical}</div><div class="lbl">🔴 קריטיות פתוחות</div></div>
+      <div class="kpi-card" style="background:linear-gradient(160deg, rgba(239,100,97,.20), var(--surface) 60%);border:1px solid var(--line);">
+        <div class="num mono" style="color:var(--red);">${overdueCount}</div><div class="lbl">⚠️ באיחור</div>
+      </div>
       <div class="kpi-card kpi-orange"><div class="num mono">${followups}</div><div class="lbl">⏳ Follow Ups פתוחים</div></div>
       <div class="kpi-card kpi-teal"><div class="num mono">${meetings}</div><div class="lbl">👥 פגישות לקבוע</div></div>
-      <div class="kpi-card kpi-green"><div class="num mono">${doneCount}</div><div class="lbl">✔ הושלמו (סה״כ)</div></div>
+      <div class="kpi-card kpi-green"><div class="num mono">${completionPct}%</div><div class="lbl">✅ הושלמו (${doneCount}/${totalCount})</div></div>
     </div>
     <div class="dash-grid">
       <div class="card">
@@ -365,6 +380,18 @@ function renderDashboard(){
           </div>
         `).join('')}
       </div>
+    </div>
+    <div class="card" style="margin-top:14px;">
+      <div class="section-title">📁 פילוח לפי פרויקט <span class="hint">משימות פתוחות</span></div>
+      ${projectList.length? projectList.map(([name,count])=>`
+        <div class="load-row">
+          <div class="load-name" style="width:140px;">${esc(name)}</div>
+          <div class="load-bar-track">
+            <div class="load-seg" style="width:${(count/maxProject)*100}%; background:var(--teal);"></div>
+          </div>
+          <div class="load-total mono">${count}</div>
+        </div>
+      `).join('') : `<div class="brief-empty">אין משימות פתוחות כרגע 🎉</div>`}
     </div>
   `;
 }
